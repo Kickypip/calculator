@@ -26,16 +26,40 @@ function operate(operator, a, b) {
     }
 }
 
+let display = document.querySelector('#display');
 
-let buttons = document.querySelectorAll('.btn');
-buttons.forEach(item => btnBorderSelect(item));
+// adds event listeners to each items
+let btns = document.querySelectorAll('.btn');
+btns.forEach(btn => {
+    btnBorderHighlight(btn);
+    if (btn.contains('number')){
+        btnNumberPress(btn);
+    }
+})
 
-function btnBorderSelect(btn) {
-    btn.addEventListener('mousedown', function (e) {
+function btnBorderHighlight(btn) {
+    btn.addEventListener('mousedown', function () {
         this.style.borderColor = 'hsl(0, 0%, 50%)';
     })
-    btn.addEventListener('mouseup', function (e) {
+    btn.addEventListener('mouseup', function () {
         this.style.borderColor = 'transparent';
     })
 }
 
+function btnPress(btn) {
+    btn.addEventListener('click', function() {
+        if (display.innerText === '0') {
+            display.innerText = '';
+        }
+        let currentButton = this.innerText;
+        display.innerText += currentButton;
+    })
+}
+
+
+/* places all buttons into object
+let btnsObject = {};
+btns.forEach(item => (btnsObject[item.id] = item.textContent));
+
+console.dir(btnsObject);
+*/
