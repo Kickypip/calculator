@@ -1,3 +1,7 @@
+let a;
+let b;
+let currentOperator;
+
 function add(a, b) {
     return a + b;
 }
@@ -16,24 +20,27 @@ function divide(a, b) {
 
 function operate(operator, a, b) {
     if (operator === '+') {
-        add(a, b);
+        return add(a, b);
     } else if (operator === '-') {
-        subtract(a, b);
-    } else if (operator === '*') {
-        multiply(a, b);
-    } else if (operator === '/') {
-        divide(a, b);
+        return subtract(a, b);
+    } else if (operator === '\u{D7}') {
+        return multiply(a, b);
+    } else if (operator === '\u{F7}') {
+        return divide(a, b);
     }
 }
 
 let display = document.querySelector('#display');
+let decimalPoint = document.querySelector('#decimal-point');
 
 // adds event listeners to each items
 let btns = document.querySelectorAll('.btn');
 btns.forEach(btn => {
     btnBorderHighlight(btn);
-    if (btn.contains('number')){
+    if (btn.classList.contains('number')) {
         btnNumberPress(btn);
+    } else if (btn.classList.contains('operator')) {
+        btnOperatorPress(btn);
     }
 })
 
@@ -46,20 +53,46 @@ function btnBorderHighlight(btn) {
     })
 }
 
-function btnPress(btn) {
-    btn.addEventListener('click', function() {
+function btnNumberPress(number) {
+    number.addEventListener('click', function() {
         if (display.innerText === '0') {
             display.innerText = '';
         }
-        let currentButton = this.innerText;
-        display.innerText += currentButton;
+        display.innerText += this.innerText;
     })
 }
 
+function btnOperatorPress(operator) {
+    operator.addEventListener('click', function() {
+        currentOperator = this.innerText;
+        a = parseFloat(display.innerText);
+        
+        display.innerText = '';
+    })
+}
 
-/* places all buttons into object
-let btnsObject = {};
-btns.forEach(item => (btnsObject[item.id] = item.textContent));
+decimalPoint.addEventListener('click', function() {
+    if (display.innerText.includes('.')) {
+        return;
+    } else {
+        display.innerText += this.innerText;
+    }
+})
 
-console.dir(btnsObject);
-*/
+equals.addEventListener('click', function() {
+    b = parseFloat(display.innerText);
+    if (b === '') {
+        console.log('test');
+        return;
+    } else if (a || b) {
+        let result = operate(currentOperator, a, b);
+        display.innerText = result;
+    }
+})
+
+clear.addEventListener('click', function () {
+    a = 0;
+    b = 0;
+    currentOperator = null;
+    display.innerText = 0;
+})
