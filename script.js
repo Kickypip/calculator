@@ -1,6 +1,8 @@
 let a;
 let b;
 let currentOperator;
+let result;
+let t = 0;
 
 function add(a, b) {
     return a + b;
@@ -19,6 +21,9 @@ function divide(a, b) {
 }
 
 function operate(operator, a, b) {
+    a = parseFloat(a);
+    b = parseFloat(b);
+
     if (operator === '+') {
         return add(a, b);
     } else if (operator === '-') {
@@ -29,11 +34,10 @@ function operate(operator, a, b) {
         return divide(a, b);
     }
 }
-
-let display = document.querySelector('#display');
+let display = document.querySelector('#display')
 let decimalPoint = document.querySelector('#decimal-point');
 
-// adds event listeners to each items
+// adds event listeners to each item
 let btns = document.querySelectorAll('.btn');
 btns.forEach(btn => {
     btnBorderHighlight(btn);
@@ -55,8 +59,16 @@ function btnBorderHighlight(btn) {
 
 function btnNumberPress(number) {
     number.addEventListener('click', function() {
-        if (display.innerText === '0') {
+        if (display.innerText == result) {
+            a = display.innerText;
+            display.innerText = this.innerText;
+            return;
+        } else if (display.innerText === '0') {
             display.innerText = '';
+        }
+        if (currentOperator && t < 1) {
+            display.innerText = '';
+            t++;
         }
         display.innerText += this.innerText;
     })
@@ -64,10 +76,16 @@ function btnNumberPress(number) {
 
 function btnOperatorPress(operator) {
     operator.addEventListener('click', function() {
+        if (currentOperator) {
+            b = display.innerText;
+            result = operate(currentOperator, a, b);
+            display.innerText = result;
+            a = result;
+        }
+
         currentOperator = this.innerText;
-        a = parseFloat(display.innerText);
-        
-        display.innerText = '';
+        a = display.innerText;   
+        //display.innerText = '';
     })
 }
 
@@ -80,19 +98,28 @@ decimalPoint.addEventListener('click', function() {
 })
 
 equals.addEventListener('click', function() {
-    b = parseFloat(display.innerText);
-    if (b === '') {
-        console.log('test');
+    b = display.innerText;
+    if (result === a) {
         return;
-    } else if (a || b) {
-        let result = operate(currentOperator, a, b);
+    } else if (!currentOperator) {
+        return;
+    } else if (a && b) {
+        result = operate(currentOperator, a, b);
         display.innerText = result;
+        a = result;
+        currentOperator = null;
     }
 })
 
 clear.addEventListener('click', function () {
+    clearData();
+})
+
+function clearData () {
     a = 0;
     b = 0;
+    t = 0;
+    result = 0;
     currentOperator = null;
     display.innerText = 0;
-})
+}
