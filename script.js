@@ -1,8 +1,5 @@
-let a;
-let b;
-let currentOperator;
-let result;
-let t = 0;
+let input = {};
+let calculation = {};
 
 function add(a, b) {
     return a + b;
@@ -27,6 +24,10 @@ function operate(operator, a, b) {
     a = parseFloat(a);
     b = parseFloat(b);
 
+    operatorHighlight.remove(input.currentOperator);
+    input.secondOperandExists = false;
+    input.currentOperator = null;
+
     if (operator === '+') {
         return add(a, b);
     } else if (operator === '-') {
@@ -37,6 +38,7 @@ function operate(operator, a, b) {
         return divide(a, b);
     }
 }
+
 let display = document.querySelector('#display')
 let decimalPoint = document.querySelector('#decimal-point');
 
@@ -60,67 +62,76 @@ function btnBorderHighlight(btn) {
     })
 }
 
+let operatorHighlight = {
+    create(operator) {
+        operator.style.backgroundColor = 'hsl(0, 0%, 60%)';
+    },
+    remove(operator) {
+        operator.style.backgroundColor = 'hsl(0, 0%, 70%)';
+    }
+};
+
 function btnNumberPress(number) {
     number.addEventListener('click', function() {
-        if (display.innerText == result) {
-            a = display.innerText;
-            display.innerText = this.innerText;
+        if (input.currentOperator && !input.secondOperandExists) {
+            display.innerText = '';
+            operatorHighlight.remove(input.currentOperator);
+            input.secondOperandExists = true;
+        }
+
+        if (this === decimalPoint && display.innerText.includes('.')) {
             return;
-        } else if (display.innerText === '0') {
+        }
+
+        if (display.innerText === '0') {
             display.innerText = '';
         }
-        if (currentOperator && t < 1) {
-            display.innerText = '';
-            t++;
+
+        if (calculation.result) {
+            input.a = calculation.result;
+            display.innerText = this.innerText;
+            calculation.result = null;
+        } else {
+            display.innerText += this.innerText;
         }
-        display.innerText += this.innerText;
     })
 }
 
 function btnOperatorPress(operator) {
     operator.addEventListener('click', function() {
-        if (currentOperator) {
-            b = display.innerText;
-            result = operate(currentOperator, a, b);
-            display.innerText = result;
+        if (input.currentOperator) {
+            input.b = display.innerText;
+            calculation.result = operate(input.currentOperator.innerText, input.a, input.b);
+            display.innerText = calculation.result;
         }
 
-        currentOperator = this.innerText;
-        a = display.innerText;
+        input.currentOperator = this;
+        input.a = display.innerText;
+        operatorHighlight.create(input.currentOperator);
+        input.secondOperandExists = false;
     })
 }
 
-decimalPoint.addEventListener('click', function() {
-    if (display.innerText.includes('.')) {
-        return;
-    } else {
-        display.innerText += this.innerText;
-    }
-})
-
 equals.addEventListener('click', function() {
-    b = display.innerText;
-    if (result === a) {
+    input.b = display.innerText;
+    if (calculation.result === input.a || !input.currentOperator) {
         return;
-    } else if (!currentOperator) {
-        return;
-    } else if (a && b) {
-        result = operate(currentOperator, a, b);
-        display.innerText = result;
-        a = result;
-        currentOperator = null;
+    } else if (input.a && input.b) {
+        calculation.result = operate(input.currentOperator.innerText, input.a, input.b);
+        display.innerText = calculation.result;
+        input.a = calculation.result;
     }
 })
 
 clear.addEventListener('click', function () {
+    if (input.currentOperator) { 
+        operatorHighlight.remove(input.currentOperator);
+    }
     clearData();
 })
 
 function clearData () {
-    a = 0;
-    b = 0;
-    t = 0;
-    result = 0;
-    currentOperator = null;
     display.innerText = 0;
+    input = {};
+    calculation = {};
 }
