@@ -17,6 +17,9 @@ function multiply(a, b) {
 }
 
 function divide(a, b) {
+    if (isNaN(a / b)) {
+        return;
+    }
     return a / b;
 }
 
@@ -80,12 +83,10 @@ function btnOperatorPress(operator) {
             b = display.innerText;
             result = operate(currentOperator, a, b);
             display.innerText = result;
-            a = result;
         }
 
         currentOperator = this.innerText;
-        a = display.innerText;   
-        //display.innerText = '';
+        a = display.innerText;
     })
 }
 
