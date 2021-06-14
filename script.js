@@ -41,6 +41,7 @@ function operate(operator, a, b) {
 
 let display = document.querySelector('#display')
 let decimalPoint = document.querySelector('#decimal-point');
+let plusMinus = document.querySelector('#plus-minus');
 
 // adds event listeners to each item
 let btns = document.querySelectorAll('.btn');
@@ -83,8 +84,9 @@ function btnNumberPress(number) {
             return;
         }
 
-        if (display.innerText === '0') {
+        if (!input.a) {
             display.innerText = '';
+            input.a = 1;
         }
 
         if (calculation.result) {
@@ -112,6 +114,14 @@ function btnOperatorPress(operator) {
     })
 }
 
+plusMinus.addEventListener('click', function() {
+    if (display.innerText.includes('-')) {
+        display.innerText = display.innerText.replace('-', '');
+    } else {
+        display.innerText = '-' + display.innerText;
+    }
+});
+
 equals.addEventListener('click', function() {
     input.b = display.innerText;
     if (calculation.result === input.a || !input.currentOperator) {
@@ -121,14 +131,14 @@ equals.addEventListener('click', function() {
         display.innerText = calculation.result;
         input.a = calculation.result;
     }
-})
+});
 
 clear.addEventListener('click', function () {
     if (input.currentOperator) { 
         operatorHighlight.remove(input.currentOperator);
     }
     clearData();
-})
+});
 
 function clearData () {
     display.innerText = 0;
