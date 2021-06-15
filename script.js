@@ -21,9 +21,10 @@ function divide(a, b) {
 }
 
 function operate(operator, a, b) {
-    a = parseFloat(a);
+    console.log(a);
+    a = Number(a);
     b = parseFloat(b);
-
+    console.log(a);
     operatorHighlight.remove(input.currentOperator);
     input.secondOperandExists = false;
     input.currentOperator = null;
@@ -82,15 +83,20 @@ function btnNumberPress(number) {
 
         if (this === decimalPoint && display.innerText.includes('.')) {
             return;
+        } else if (this === plusMinus) {
+            if (display.innerText.includes('-')) {
+                display.innerText = display.innerText.replace('-', '');
+            } else {
+                display.innerText = '-' + display.innerText;
+            }
+            return;
         }
 
-        if (!input.a) {
-            display.innerText = '';
-            input.a = 1;
+        if (display.innerText == 0) {
+            display.innerText = display.innerText.replace('0', '');
         }
 
         if (calculation.result) {
-            input.a = calculation.result;
             display.innerText = this.innerText;
             calculation.result = null;
         } else {
@@ -105,28 +111,22 @@ function btnOperatorPress(operator) {
             input.b = display.innerText;
             calculation.result = operate(input.currentOperator.innerText, input.a, input.b);
             display.innerText = calculation.result;
+            input.a = calculation.result;
+        } else {
+            input.a = display.innerText;
         }
-
         input.currentOperator = this;
-        input.a = display.innerText;
         operatorHighlight.create(input.currentOperator);
         input.secondOperandExists = false;
     })
 }
-
-plusMinus.addEventListener('click', function() {
-    if (display.innerText.includes('-')) {
-        display.innerText = display.innerText.replace('-', '');
-    } else {
-        display.innerText = '-' + display.innerText;
-    }
-});
 
 equals.addEventListener('click', function() {
     input.b = display.innerText;
     if (calculation.result === input.a || !input.currentOperator) {
         return;
     } else if (input.a && input.b) {
+        console.log(input.a);
         calculation.result = operate(input.currentOperator.innerText, input.a, input.b);
         display.innerText = calculation.result;
         input.a = calculation.result;
