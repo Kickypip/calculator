@@ -68,10 +68,10 @@ function btnBorderHighlight(btn) {
 
 let operatorHighlight = {
     create(operator) {
-        operator.style.backgroundColor = 'hsl(0, 0%, 60%)';
+        operator.classList.add('highlighted');
     },
     remove(operator) {
-        operator.style.backgroundColor = 'hsl(0, 0%, 70%)';
+        operator.classList.remove('highlighted');
     }
 };
 
