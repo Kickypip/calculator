@@ -21,13 +21,14 @@ function divide(a, b) {
 }
 
 function operate(operator, a, b) {
-    console.log(a);
-    a = Number(a);
+    a = parseFloat(a);
     b = parseFloat(b);
-    console.log(a);
-    operatorHighlight.remove(input.currentOperator);
-    input.secondOperandExists = false;
-    input.currentOperator = null;
+
+    if (input.currentOperator) {
+        operatorHighlight.remove(input.currentOperator);
+        input.secondOperandExists = false;
+        input.currentOperator = null;
+    }
 
     if (operator === '+') {
         return add(a, b);
@@ -43,6 +44,7 @@ function operate(operator, a, b) {
 let display = document.querySelector('#display')
 let decimalPoint = document.querySelector('#decimal-point');
 let plusMinus = document.querySelector('#plus-minus');
+let percentageEquivalent = document.querySelector('#percentage-equivalent');
 
 // adds event listeners to each item
 let btns = document.querySelectorAll('.btn');
@@ -121,12 +123,15 @@ function btnOperatorPress(operator) {
     })
 }
 
+percentageEquivalent.addEventListener('click', function() {
+    display.innerText = operate('\u{F7}', display.innerText, 100);
+})
+
 equals.addEventListener('click', function() {
     input.b = display.innerText;
     if (calculation.result === input.a || !input.currentOperator) {
         return;
     } else if (input.a && input.b) {
-        console.log(input.a);
         calculation.result = operate(input.currentOperator.innerText, input.a, input.b);
         display.innerText = calculation.result;
         input.a = calculation.result;
@@ -145,3 +150,4 @@ function clearData () {
     input = {};
     calculation = {};
 }
+
