@@ -64,6 +64,10 @@ body {
     font-size: 22px;
 }
 
+.selected {
+    border-color: hsl(0, 0%, 50%);
+}
+
 .btn:hover {
     cursor: pointer;
     filter: brightness(0.85);
@@ -82,7 +86,9 @@ body {
     justify-content: flex-end;
     align-items: center;
     padding: 10px;
+    margin-left: 5px;
     font-size: 48px;
+    overflow: clip;
 }
 
 .highlighted {
